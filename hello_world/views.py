@@ -14,8 +14,13 @@ class UserView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
     lookup_field = 'user_name'
 
-    # def update(self, *args, **kwargs):
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        data = request.data
+        serializer = UserSerializer(instance=instance, data=data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
